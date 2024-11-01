@@ -12,7 +12,7 @@ import { AuthContextType, AuthState, User } from "../types/auth";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 const LOCAL_STORAGE_TOKEN_KEY = "auth_token";
-const API_BASE_URL = "https://jmk-cloud.vercel.app/apiv1";
+const API_BASE_URL = "https://api-jmkcloud.vercel.app/apiv1";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
