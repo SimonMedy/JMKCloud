@@ -24,11 +24,11 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    #[Route('/api/test', name: 'app_test')]
+    #[Route('/app/test', name: 'app_test')]
     public function testApi(): JsonResponse
     {
         return $this->json([
-            'message' => 'Mon test /api/test'
+            'message' => 'Mon test /app/test'
         ]);
     }
 }

@@ -10,63 +10,63 @@ index:
 
 # Routes pour UserController
 api_login:
-  path: /login
+  path: /apiv1/login
   controller: App\Controller\UserController::login
   methods: [POST]
 
 api_user_profile:
-  path: /api/user/profile
+  path: /apiv1/user/profile
   controller: App\Controller\UserController::profile
   methods: [GET]
 
 api_register:
-  path: /zizi/register
+  path: /apiv1/register
   controller: App\Controller\UserController::register
   methods: [POST]
 
 api_confirm_email:
-  path: /api/confirm-email
+  path: /apiv1/confirm-email
   controller: App\Controller\UserController::confirmEmail
   methods: [POST]
 
 api_confirm_registration:
-  path: /api/confirm-registration
+  path: /apiv1/confirm-registration
   controller: App\Controller\UserController::confirmRegistration
   methods: [POST]
 
 api_users_list:
-  path: /api/users
+  path: /apiv1/users
   controller: 'App\Controller\UserController::getUsers'
   methods: [GET]
 
 api_user_get:
-  path: /api/users/{id}
+  path: /apiv1/users/{id}
   controller: App\Controller\UserController::getUserById
   methods: [GET]
 
 api_user_get_by_email:
-  path: /api/users/email/{email}
+  path: /apiv1/users/email/{email}
   controller: App\Controller\UserController::getUserByEmail
   methods: [GET]
 
 api_user_delete:
-  path: /api/users/{id}
+  path: /apiv1/users/{id}
   controller: 'App\Controller\UserController::deleteUser'
   methods: [DELETE]
 
 api_user_delete_by_email:
-  path: /api/users/email/{email}
+  path: /apiv1/users/email/{email}
   controller: App\Controller\UserController::deleteUserByEmail
   methods: [DELETE]
 
 # Routes pour PaymentController
 api_create_payment_intent:
-  path: /api/create-payment-intent
+  path: /apiv1/create-payment-intent
   controller: App\Controller\PaymentController::createPaymentIntent
   methods: [POST]
 
 api_confirm_payment:
-  path: /api/confirm-payment
+  path: /apiv1/confirm-payment
   controller: App\Controller\PaymentController::confirmPayment
   methods: [POST]
 # Routes pour StockageController

@@ -9,24 +9,24 @@ security:
         property: email
   firewalls:
     login:
-      pattern: ^/api/login
+      pattern: ^/apiv1/login
       stateless: true
       provider: app_user_provider
       security: true
       json_login:
         username_path: email
         password_path: password
-        check_path: /api/login
+        check_path: /apiv1/login
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
     register:
-      pattern: ^/api/(register|confirm-email|confirm-registration)
+      pattern: ^/apiv1/(register|confirm-email|confirm-registration)
       stateless: false
       security: false
 
     api:
-      pattern: ^/api
+      pattern: ^/apiv1
       stateless: true
       jwt: ~
 
@@ -40,15 +40,15 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    - { path: ^/api/login, method: [POST], roles: PUBLIC_ACCESS }
-    - { path: ^/api/register, roles: PUBLIC_ACCESS }
-    - { path: ^/api/confirm-email, roles: PUBLIC_ACCESS }
-    - { path: ^/api/confirm-registration, roles: PUBLIC_ACCESS }
-    - { path: ^/api/users, method: [GET], roles: ROLE_ADMIN }
-    - { path: ^/api/users/\d+, method: [GET, DELETE], roles: ROLE_ADMIN }
-    - { path: ^/api/users/email/\w+, method: [GET, DELETE], roles: ROLE_ADMIN }
-    - { path: ^/api/create-payment-intent, roles: ROLE_USER }
-    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/apiv1/login, method: [POST], roles: PUBLIC_ACCESS }
+    - { path: ^/apiv1/register, roles: PUBLIC_ACCESS }
+    - { path: ^/apiv1/confirm-email, roles: PUBLIC_ACCESS }
+    - { path: ^/apiv1/confirm-registration, roles: PUBLIC_ACCESS }
+    - { path: ^/apiv1/users, method: [GET], roles: ROLE_ADMIN }
+    - { path: ^/apiv1/users/\d+, method: [GET, DELETE], roles: ROLE_ADMIN }
+    - { path: ^/apiv1/users/email/\w+, method: [GET, DELETE], roles: ROLE_ADMIN }
+    - { path: ^/apiv1/create-payment-intent, roles: ROLE_USER }
+    - { path: ^/apiv1, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
   security:
