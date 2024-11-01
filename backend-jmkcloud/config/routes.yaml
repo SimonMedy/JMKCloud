@@ -8,11 +8,7 @@ index:
   path: /
   controller: App\Controller\DefaultController::index
 
-# Routes pour UserController
-api_login:
-  path: /api/login
-  controller: App\Controller\UserController::login
-  methods: [POST]
+
 
 api_user_profile:
   path: /api/user/profile
