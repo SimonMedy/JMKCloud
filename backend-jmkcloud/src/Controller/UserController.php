@@ -208,8 +208,7 @@ class UserController extends AbstractController
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
                 'body' => http_build_query([
-                    'payment_method_types[]' => 'card',
-                    'payment_method_types[]' => 'paypal',
+                    'payment_method_types' => ['card', 'paypal'],
                     'line_items[0][price_data][currency]' => 'eur',
                     'line_items[0][price_data][unit_amount]' => 2000,
                     'line_items[0][price_data][product_data][name]' => 'Inscription à JMK Cloud',
@@ -219,7 +218,7 @@ class UserController extends AbstractController
                     'success_url' => 'https://jmkcloud.vercel.app/register/success?session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url' => 'https://jmkcloud.vercel.app/register/',
                     'customer_email' => $pendingRegistration->getEmail(),
-                    'expires_at' => time() + (24 * 60 * 60),
+                    'expires_at' => time() + (24 * 60 * 60)
                 ])
             ]);
 
