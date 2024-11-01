@@ -16,7 +16,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-
+    #[Route('/test', name: 'app_test')]
     public function test(): JsonResponse
     {
         return $this->json([

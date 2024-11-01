@@ -8,11 +8,6 @@ index:
   path: /
   controller: App\Controller\DefaultController::index
 
-app_test:
-  path: /api/test
-  controller: App\Controller\DefaultController::test
-  methods: [GET]
-
 # Routes pour UserController
 api_login:
   path: /api/login
