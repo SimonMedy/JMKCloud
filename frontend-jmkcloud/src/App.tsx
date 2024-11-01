@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./components/ProfilePage";
-import AuthenticatedLayout from "./components/AuthenticatedLayout";
 import "./App.css";
 import StoragePurchasePage from "./pages/StoragePurchasePage";
 import LandingPage from "./pages/LandingPage";
@@ -31,11 +30,9 @@ function App() {
             <Route path="/register/success" element={<RegisterSuccess />} />
 
             <Route element={<SidebarLayout />}>
-              <Route element={<AuthenticatedLayout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profil" element={<ProfilePage />} />
-                <Route path="/offers" element={<StoragePurchasePage />} />
-              </Route>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profil" element={<ProfilePage />} />
+              <Route path="/offers" element={<StoragePurchasePage />} />
             </Route>
 
             <Route path="*" element={<LoginPage />} />
