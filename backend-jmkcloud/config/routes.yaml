@@ -20,7 +20,7 @@ api_user_profile:
   methods: [GET]
 
 api_register:
-  path: /api/register
+  path: /zizi/register
   controller: App\Controller\UserController::register
   methods: [POST]
 
