@@ -20,7 +20,7 @@ class EmailService
                 <p>Bonjour,</p>
                 <p>Merci de vous être inscrit sur JMK Cloud ! Pour continuer votre inscription, veuillez cliquer sur le lien ci-dessous pour vérifier votre adresse email :</p>
                 <div style='text-align: center; margin: 20px 0;'>
-                    <a href='http://localhost:5173/confirm/{$token}' 
+                    <a href='https://jmkcloud.vercel.app/confirm/{$token}' 
                        style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #ff6600; border-radius: 4px; text-decoration: none; font-weight: bold;'>
                         Vérifier mon email
                     </a>
@@ -30,15 +30,15 @@ class EmailService
             </div>
             <footer style='text-align: center; margin-top: 20px; font-size: 12px; color: #888;'>
                 © 2024 JMK Cloud. Tous droits réservés.<br>
-                <a href='http://localhost:5173/' style='color: #888; text-decoration: underline;'>Conditions d'utilisation</a> | 
-                <a href='http://localhost:5173/' style='color: #888; text-decoration: underline;'>Politique de confidentialité</a>
+                <a href='https://jmkcloud.vercel.app/' style='color: #888; text-decoration: underline;'>Conditions d'utilisation</a> | 
+                <a href='https://jmkcloud.vercel.app/' style='color: #888; text-decoration: underline;'>Politique de confidentialité</a>
             </footer>
         </div>
     ";
 
         $email = (new Email())
-            ->from('noreply@jmkcloud.com')
-            ->replyTo('noreply@jmkcloud.com')
+            ->from('yxtomix@gmail.com')
+            ->replyTo('yxtomix@gmail.com')
             ->to($to)
             ->subject('Confirmez votre inscription à JMK Cloud')
             ->html($emailContent);

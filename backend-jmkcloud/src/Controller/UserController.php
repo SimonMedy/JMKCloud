@@ -207,8 +207,8 @@ class UserController extends AbstractController
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
-                'success_url' => 'http://localhost:5173/register/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => 'http://localhost:5173/register/',
+                'success_url' => 'https://jmkcloud.vercel.app/register/success?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => 'https://jmkcloud.vercel.app/register/',
                 'customer_email' => $pendingRegistration->getEmail(),
                 'expires_at' => time() + (24 * 60 * 60)
             ]);
