@@ -17,8 +17,6 @@
         "nelmio/cors-bundle": "^2.5",
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpstan/phpdoc-parser": "^1.29",
-        "ext-curl": "*",
-        "ext-json": "*",
         "stripe/stripe-php": "^15.10",
         "symfony/brevo-mailer": "7.1.*",
         "symfony/console": "7.1.*",

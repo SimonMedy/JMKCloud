@@ -20,18 +20,27 @@ use Stripe\Stripe;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class UserController extends AbstractController
 {
     private $passwordHasher;
     private $jwtManager;
     private $emailService;
+    private $httpClient;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher, EmailService $emailService, JWTTokenManagerInterface $jwtManager, private Security $security, private RequestStack $requestStack)
-    {
+    public function __construct(
+        UserPasswordHasherInterface $passwordHasher,
+        EmailService $emailService,
+        JWTTokenManagerInterface $jwtManager,
+        private Security $security,
+        private RequestStack $requestStack,
+        HttpClientInterface $httpClient
+    ) {
         $this->passwordHasher = $passwordHasher;
         $this->jwtManager = $jwtManager;
         $this->emailService = $emailService;
+        $this->httpClient = $httpClient;
     }
 
     public function profile(UserInterface $user): JsonResponse
@@ -192,36 +201,46 @@ class UserController extends AbstractController
                 return new JsonResponse(['message' => 'Token expiré'], Response::HTTP_BAD_REQUEST);
             }
 
-            Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-            $stripeSession = \Stripe\Checkout\Session::create([
-                'payment_method_types' => ['card', 'paypal'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'eur',
-                        'unit_amount' => 2000,
-                        'product_data' => [
-                            'name' => 'Inscription à JMK Cloud',
-                            'description' => 'Paiement unique pour s\'inscrire à JMK Cloud et bénéficier de 20 Go de stockage',
-                        ],
-                    ],
-                    'quantity' => 1,
-                ]],
-                'mode' => 'payment',
-                'success_url' => 'https://jmkcloud.vercel.app/register/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => 'https://jmkcloud.vercel.app/register/',
-                'customer_email' => $pendingRegistration->getEmail(),
-                'expires_at' => time() + (24 * 60 * 60)
+            // Utilisation du client HTTP de Symfony pour créer une session Stripe
+            $response = $this->httpClient->request('POST', 'https://api.stripe.com/v1/checkout/sessions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $_ENV['STRIPE_SECRET_KEY'],
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body' => http_build_query([
+                    'payment_method_types[]' => 'card',
+                    'payment_method_types[]' => 'paypal',
+                    'line_items[0][price_data][currency]' => 'eur',
+                    'line_items[0][price_data][unit_amount]' => 2000,
+                    'line_items[0][price_data][product_data][name]' => 'Inscription à JMK Cloud',
+                    'line_items[0][price_data][product_data][description]' => 'Paiement unique pour s\'inscrire à JMK Cloud et bénéficier de 20 Go de stockage',
+                    'line_items[0][quantity]' => 1,
+                    'mode' => 'payment',
+                    'success_url' => 'https://jmkcloud.vercel.app/register/success?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => 'https://jmkcloud.vercel.app/register/',
+                    'customer_email' => $pendingRegistration->getEmail(),
+                    'expires_at' => time() + (24 * 60 * 60),
+                ])
             ]);
 
-            $pendingRegistration->setStripeSessionId($stripeSession->id);
+            $stripeSession = json_decode($response->getContent(), true);
+
+            if (!isset($stripeSession['id']) || !isset($stripeSession['url'])) {
+                throw new \Exception('Erreur lors de la création de la session Stripe');
+            }
+
+            $pendingRegistration->setStripeSessionId($stripeSession['id']);
             $em->flush();
 
             return new JsonResponse([
                 'message' => 'Email confirmé avec succès',
-                'payment_url' => $stripeSession->url
+                'payment_url' => $stripeSession['url']
             ]);
         } catch (\Exception $e) {
-            return new JsonResponse(['message' => 'Une erreur est survenue: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(
+                ['message' => 'Une erreur est survenue: ' . $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -238,10 +257,16 @@ class UserController extends AbstractController
                 throw new BadRequestHttpException('Inscription invalide ou expirée.');
             }
 
-            Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-            $stripeSession = \Stripe\Checkout\Session::retrieve($sessionId);
+            // Utilisation du client HTTP pour vérifier le status du paiement
+            $response = $this->httpClient->request('GET', 'https://api.stripe.com/v1/checkout/sessions/' . $sessionId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $_ENV['STRIPE_SECRET_KEY'],
+                ]
+            ]);
 
-            if ($stripeSession->payment_status !== 'paid') {
+            $stripeSession = json_decode($response->getContent(), true);
+
+            if ($stripeSession['payment_status'] !== 'paid') {
                 throw new \Exception('Le paiement n\'a pas été complété.');
             }
 
@@ -263,7 +288,10 @@ class UserController extends AbstractController
 
             return new JsonResponse(['token' => $token], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return new JsonResponse(['message' => 'Une erreur est survenue: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(
+                ['message' => 'Une erreur est survenue: ' . $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
