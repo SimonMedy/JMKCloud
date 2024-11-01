@@ -20,7 +20,6 @@ use Stripe\Stripe;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
@@ -45,7 +44,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(EntityManagerInterface $em, Request $request): JsonResponse
     {
         try {
