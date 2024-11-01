@@ -15,4 +15,12 @@ class DefaultController extends AbstractController
             'message' => 'Welcome to my the JmkCloud API'
         ]);
     }
+
+    #[Route('/test', name: 'app_test')]
+    public function test(): JsonResponse
+    {
+        return $this->json([
+            'message' => 'Mon test'
+        ]);
+    }
 }
